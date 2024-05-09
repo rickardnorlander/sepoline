@@ -19,8 +19,9 @@ typedef int (*my_sepoline_signature)(const char*, jmp_buf);
 
 int main () {
   jmp_buf jb;
-  if (init_sepoline_lib()) {
-    printf("Failed to initialize sepoline lib: %d\n", init_sepoline_lib());
+  int init_result = init_sepoline_lib();
+  if (init_result) {
+    printf("Failed to initialize sepoline lib: %d\n", init_result);
     return 1;
   }
   prepare_sepoline(function_that_can_fail, jb);
@@ -29,6 +30,6 @@ int main () {
   if (setjmp_result == 0) {
     printf("Function finished successfully! Result: %d\n", function_result);
   } else {
-    printf("Function failed! Failure code: 0x%X\n", get_setjmp_ret());
+    printf("Function failed! Failure code: 0x%X\n", setjmp_result);
   }
 }
